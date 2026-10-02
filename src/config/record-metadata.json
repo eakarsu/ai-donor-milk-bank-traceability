@@ -1,0 +1,603 @@
+{
+  "MilkBankProgram": {
+    "name": "MilkBankProgram",
+    "fields": [
+      {
+        "name": "name",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "facility",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "licenseReference",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "coordinator",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "reportingStart",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "reportingEnd",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      }
+    ]
+  },
+  "MilkDonor": {
+    "name": "MilkDonor",
+    "fields": [
+      {
+        "name": "name",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "donorCode",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "consentAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "screeningEvidence",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "reviewDueAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "milkBankProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "MilkBankProgram"
+      }
+    ],
+    "parent": {
+      "entity": "MilkBankProgram",
+      "field": "milkBankProgramId"
+    }
+  },
+  "MilkDonation": {
+    "name": "MilkDonation",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "milkDonorId",
+        "kind": "string",
+        "required": true,
+        "relation": "MilkDonor"
+      },
+      {
+        "name": "collectedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "receivedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "volumeMl",
+        "kind": "number",
+        "required": true,
+        "min": 0
+      },
+      {
+        "name": "containerNumber",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "milkBankProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "MilkBankProgram"
+      }
+    ],
+    "parent": {
+      "entity": "MilkBankProgram",
+      "field": "milkBankProgramId"
+    }
+  },
+  "MilkPool": {
+    "name": "MilkPool",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "poolNumber",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "pooledAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "volumeMl",
+        "kind": "number",
+        "required": true,
+        "min": 0
+      },
+      {
+        "name": "operator",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "milkBankProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "MilkBankProgram"
+      }
+    ],
+    "parent": {
+      "entity": "MilkBankProgram",
+      "field": "milkBankProgramId"
+    }
+  },
+  "PoolContribution": {
+    "name": "PoolContribution",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "milkDonationId",
+        "kind": "string",
+        "required": true,
+        "relation": "MilkDonation"
+      },
+      {
+        "name": "milkPoolId",
+        "kind": "string",
+        "required": true,
+        "relation": "MilkPool"
+      },
+      {
+        "name": "volumeMl",
+        "kind": "number",
+        "required": true,
+        "min": 0
+      },
+      {
+        "name": "addedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "milkBankProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "MilkBankProgram"
+      }
+    ],
+    "parent": {
+      "entity": "MilkBankProgram",
+      "field": "milkBankProgramId"
+    }
+  },
+  "PasteurizationRun": {
+    "name": "PasteurizationRun",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "milkPoolId",
+        "kind": "string",
+        "required": true,
+        "relation": "MilkPool"
+      },
+      {
+        "name": "startedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "endedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "equipment",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "cycleEvidence",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "milkBankProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "MilkBankProgram"
+      }
+    ],
+    "parent": {
+      "entity": "MilkBankProgram",
+      "field": "milkBankProgramId"
+    }
+  },
+  "MilkLabCheck": {
+    "name": "MilkLabCheck",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "milkPoolId",
+        "kind": "string",
+        "required": true,
+        "relation": "MilkPool"
+      },
+      {
+        "name": "sampledAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "laboratory",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "testName",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "resultText",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "evidence",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "milkBankProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "MilkBankProgram"
+      }
+    ],
+    "parent": {
+      "entity": "MilkBankProgram",
+      "field": "milkBankProgramId"
+    }
+  },
+  "MilkDistribution": {
+    "name": "MilkDistribution",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "milkPoolId",
+        "kind": "string",
+        "required": true,
+        "relation": "MilkPool"
+      },
+      {
+        "name": "dispatchedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "recipient",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "volumeMl",
+        "kind": "number",
+        "required": true,
+        "min": 0
+      },
+      {
+        "name": "receipt",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "milkBankProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "MilkBankProgram"
+      }
+    ],
+    "parent": {
+      "entity": "MilkBankProgram",
+      "field": "milkBankProgramId"
+    }
+  },
+  "MilkRecall": {
+    "name": "MilkRecall",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "milkPoolId",
+        "kind": "string",
+        "required": true,
+        "relation": "MilkPool"
+      },
+      {
+        "name": "initiatedAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "reason",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "coordinator",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "responseEvidence",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "milkBankProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "MilkBankProgram"
+      }
+    ],
+    "parent": {
+      "entity": "MilkBankProgram",
+      "field": "milkBankProgramId"
+    }
+  },
+  "OperationalTask": {
+    "name": "OperationalTask",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "owner",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "priority",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "startAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "dueAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "done",
+        "kind": "boolean",
+        "required": true
+      },
+      {
+        "name": "notes",
+        "kind": "string",
+        "required": false
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "milkBankProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "MilkBankProgram"
+      }
+    ],
+    "parent": {
+      "entity": "MilkBankProgram",
+      "field": "milkBankProgramId"
+    }
+  },
+  "RuleVersion": {
+    "name": "RuleVersion",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "jurisdiction",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "version",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "effectiveAt",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "expiresAt",
+        "kind": "date",
+        "required": false
+      },
+      {
+        "name": "sourceUrl",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "requirementText",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "milkBankProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "MilkBankProgram"
+      }
+    ],
+    "parent": {
+      "entity": "MilkBankProgram",
+      "field": "milkBankProgramId"
+    }
+  },
+  "DocumentRequirement": {
+    "name": "DocumentRequirement",
+    "fields": [
+      {
+        "name": "title",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "category",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "requiredBy",
+        "kind": "date",
+        "required": true
+      },
+      {
+        "name": "sourceReference",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "evidenceReference",
+        "kind": "string",
+        "required": false
+      },
+      {
+        "name": "reviewNotes",
+        "kind": "string",
+        "required": false
+      },
+      {
+        "name": "status",
+        "kind": "string",
+        "required": true
+      },
+      {
+        "name": "milkBankProgramId",
+        "kind": "string",
+        "required": true,
+        "relation": "MilkBankProgram"
+      }
+    ],
+    "parent": {
+      "entity": "MilkBankProgram",
+      "field": "milkBankProgramId"
+    }
+  }
+}

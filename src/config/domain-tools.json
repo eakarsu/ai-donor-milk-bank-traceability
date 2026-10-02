@@ -1,0 +1,57 @@
+[
+  {
+    "id": "domain-calculation",
+    "title": "Milk pool volume traceability",
+    "operation": "inventory",
+    "example": {
+      "unit": "mL",
+      "opening": 0,
+      "received": 1500,
+      "issued": 1200,
+      "measuredClosing": 280,
+      "tolerance": 5
+    },
+    "description": "Reconcile pooled input, distributed volume and measured remaining stock; release and screening are separate."
+  },
+  {
+    "id": "evidence-check",
+    "operation": "evidence",
+    "title": "Milk Bank Program evidence checklist",
+    "description": "Check source presence against an explicitly supplied document list; reviewer assesses adequacy.",
+    "example": {
+      "requirements": [
+        {
+          "id": "source-1",
+          "requirement": "Milk Donor evidence",
+          "evidence": "Example source reference"
+        },
+        {
+          "id": "source-2",
+          "requirement": "Reviewed rule version",
+          "evidence": ""
+        }
+      ]
+    }
+  },
+  {
+    "id": "deadline-check",
+    "operation": "deadlines",
+    "title": "Operational deadline queue",
+    "description": "Compute overdue items from entered dates and completed flags; no external notifications.",
+    "example": {
+      "asOf": "2026-10-20T12:00:00Z",
+      "items": [
+        {
+          "id": "review-1",
+          "dueAt": "2026-10-18T00:00:00Z",
+          "completed": false
+        },
+        {
+          "id": "follow-up-1",
+          "dueAt": "2026-10-23T00:00:00Z",
+          "completed": false
+        }
+      ]
+    }
+  }
+]

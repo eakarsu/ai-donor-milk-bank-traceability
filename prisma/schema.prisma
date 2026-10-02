@@ -1,0 +1,365 @@
+// Generated schema — modeled after beautyhqio conventions.
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  active       Boolean @default(true)
+  id           String   @id @default(cuid())
+  email        String   @unique
+  name         String
+  passwordHash String
+  role         Role     @default(ANALYST)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+}
+
+enum Role {
+  ADMIN
+  MANAGER
+  ANALYST
+}
+
+model AuditLog {
+  id        String   @id @default(cuid())
+  actorId   String?
+  actorName String?
+  action    String
+  entity    String
+  entityId  String?
+  detail    String?
+  createdAt DateTime @default(now())
+}
+
+model WorkflowAnalysis {
+ id String @id @default(cuid())
+ actorId String
+ workflow String
+ subjectEntity String
+ subjectId String
+ input Json
+ evidence Json
+ evidenceHash String
+ result Json
+ model String
+ receipt String?
+ createdAt DateTime @default(now())
+ @@index([workflow, createdAt])
+}
+model RecordReview {
+ id String @id @default(cuid())
+ actorId String
+ entity String
+ entityId String
+ version String
+ reason String
+ createdAt DateTime @default(now())
+ @@unique([entity, entityId, version, actorId])
+}
+model UsageBucket {
+ id String @id
+ calls Int
+}
+model IssuedCredential {
+ token String @id
+ entity String
+ entityId String
+ version String
+ assertion Json
+ createdAt DateTime @default(now())
+ revokedAt DateTime?
+ @@index([entity, entityId, createdAt])
+}
+
+model DomainArtifact {
+ id String @id @default(cuid())
+ subjectEntity String
+ subjectId String
+ title String
+ content String
+ contentHash String
+ actorId String
+ approvedBy String?
+ createdAt DateTime @default(now())
+ @@index([subjectEntity, subjectId])
+}
+
+model RecordApproval {
+ id String @id
+ version String
+}
+model DomainExecution {
+ id String @id
+ actorId String
+ connectorId String
+ action String
+ subjectEntity String
+ subjectId String
+ version String
+ status String
+ result Json?
+ createdAt DateTime @default(now())
+}
+
+model WorkSession {
+ id String @id @default(cuid())
+ actorId String
+ respondentId String
+ subjectEntity String
+ subjectId String
+ questions Json
+ answers Json
+ currentQuestion String?
+ status String
+ deadline DateTime
+ createdAt DateTime @default(now())
+ @@index([respondentId, createdAt])
+}
+model SessionMedia {
+ id String @id @default(cuid())
+ sessionId String
+ questionId String
+ actorId String
+ contentType String
+ bytes Bytes
+ contentHash String
+ createdAt DateTime @default(now())
+ @@index([sessionId])
+}
+
+model AppSetting {
+ id String @id
+ value Json
+ updatedAt DateTime @updatedAt
+}
+
+model MilkBankProgram {
+ id String @id @default(cuid())
+ name String
+ facility String
+ licenseReference String
+ coordinator String
+ reportingStart DateTime
+ reportingEnd DateTime
+ status String @default("Draft")
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ inverseMilkDonor_milkBankProgramId MilkDonor[] @relation("MilkDonor_milkBankProgramId")
+ inverseMilkDonation_milkBankProgramId MilkDonation[] @relation("MilkDonation_milkBankProgramId")
+ inverseMilkPool_milkBankProgramId MilkPool[] @relation("MilkPool_milkBankProgramId")
+ inversePoolContribution_milkBankProgramId PoolContribution[] @relation("PoolContribution_milkBankProgramId")
+ inversePasteurizationRun_milkBankProgramId PasteurizationRun[] @relation("PasteurizationRun_milkBankProgramId")
+ inverseMilkLabCheck_milkBankProgramId MilkLabCheck[] @relation("MilkLabCheck_milkBankProgramId")
+ inverseMilkDistribution_milkBankProgramId MilkDistribution[] @relation("MilkDistribution_milkBankProgramId")
+ inverseMilkRecall_milkBankProgramId MilkRecall[] @relation("MilkRecall_milkBankProgramId")
+ inverseOperationalTask_milkBankProgramId OperationalTask[] @relation("OperationalTask_milkBankProgramId")
+ inverseRuleVersion_milkBankProgramId RuleVersion[] @relation("RuleVersion_milkBankProgramId")
+ inverseDocumentRequirement_milkBankProgramId DocumentRequirement[] @relation("DocumentRequirement_milkBankProgramId")
+}
+
+model MilkDonor {
+ id String @id @default(cuid())
+ name String
+ donorCode String
+ consentAt DateTime
+ screeningEvidence String
+ reviewDueAt DateTime
+ status String @default("Draft")
+ milkBankProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([milkBankProgramId])
+ linkedMilkBankProgramId MilkBankProgram @relation("MilkDonor_milkBankProgramId", fields: [milkBankProgramId], references: [id], onDelete: Restrict)
+ inverseMilkDonation_milkDonorId MilkDonation[] @relation("MilkDonation_milkDonorId")
+}
+
+model MilkDonation {
+ id String @id @default(cuid())
+ title String
+ milkDonorId String
+ collectedAt DateTime
+ receivedAt DateTime
+ volumeMl Float
+ containerNumber String
+ status String @default("Draft")
+ milkBankProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([milkBankProgramId])
+ linkedMilkDonorId MilkDonor @relation("MilkDonation_milkDonorId", fields: [milkDonorId], references: [id], onDelete: Restrict)
+ linkedMilkBankProgramId MilkBankProgram @relation("MilkDonation_milkBankProgramId", fields: [milkBankProgramId], references: [id], onDelete: Restrict)
+ inversePoolContribution_milkDonationId PoolContribution[] @relation("PoolContribution_milkDonationId")
+}
+
+model MilkPool {
+ id String @id @default(cuid())
+ title String
+ poolNumber String
+ pooledAt DateTime
+ volumeMl Float
+ operator String
+ status String @default("Draft")
+ milkBankProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([milkBankProgramId])
+ linkedMilkBankProgramId MilkBankProgram @relation("MilkPool_milkBankProgramId", fields: [milkBankProgramId], references: [id], onDelete: Restrict)
+ inversePoolContribution_milkPoolId PoolContribution[] @relation("PoolContribution_milkPoolId")
+ inversePasteurizationRun_milkPoolId PasteurizationRun[] @relation("PasteurizationRun_milkPoolId")
+ inverseMilkLabCheck_milkPoolId MilkLabCheck[] @relation("MilkLabCheck_milkPoolId")
+ inverseMilkDistribution_milkPoolId MilkDistribution[] @relation("MilkDistribution_milkPoolId")
+ inverseMilkRecall_milkPoolId MilkRecall[] @relation("MilkRecall_milkPoolId")
+}
+
+model PoolContribution {
+ id String @id @default(cuid())
+ title String
+ milkDonationId String
+ milkPoolId String
+ volumeMl Float
+ addedAt DateTime
+ status String @default("Draft")
+ milkBankProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([milkBankProgramId])
+ linkedMilkDonationId MilkDonation @relation("PoolContribution_milkDonationId", fields: [milkDonationId], references: [id], onDelete: Restrict)
+ linkedMilkPoolId MilkPool @relation("PoolContribution_milkPoolId", fields: [milkPoolId], references: [id], onDelete: Restrict)
+ linkedMilkBankProgramId MilkBankProgram @relation("PoolContribution_milkBankProgramId", fields: [milkBankProgramId], references: [id], onDelete: Restrict)
+}
+
+model PasteurizationRun {
+ id String @id @default(cuid())
+ title String
+ milkPoolId String
+ startedAt DateTime
+ endedAt DateTime
+ equipment String
+ cycleEvidence String
+ status String @default("Draft")
+ milkBankProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([milkBankProgramId])
+ linkedMilkPoolId MilkPool @relation("PasteurizationRun_milkPoolId", fields: [milkPoolId], references: [id], onDelete: Restrict)
+ linkedMilkBankProgramId MilkBankProgram @relation("PasteurizationRun_milkBankProgramId", fields: [milkBankProgramId], references: [id], onDelete: Restrict)
+}
+
+model MilkLabCheck {
+ id String @id @default(cuid())
+ title String
+ milkPoolId String
+ sampledAt DateTime
+ laboratory String
+ testName String
+ resultText String
+ evidence String
+ status String @default("Draft")
+ milkBankProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([milkBankProgramId])
+ linkedMilkPoolId MilkPool @relation("MilkLabCheck_milkPoolId", fields: [milkPoolId], references: [id], onDelete: Restrict)
+ linkedMilkBankProgramId MilkBankProgram @relation("MilkLabCheck_milkBankProgramId", fields: [milkBankProgramId], references: [id], onDelete: Restrict)
+}
+
+model MilkDistribution {
+ id String @id @default(cuid())
+ title String
+ milkPoolId String
+ dispatchedAt DateTime
+ recipient String
+ volumeMl Float
+ receipt String
+ status String @default("Draft")
+ milkBankProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([milkBankProgramId])
+ linkedMilkPoolId MilkPool @relation("MilkDistribution_milkPoolId", fields: [milkPoolId], references: [id], onDelete: Restrict)
+ linkedMilkBankProgramId MilkBankProgram @relation("MilkDistribution_milkBankProgramId", fields: [milkBankProgramId], references: [id], onDelete: Restrict)
+}
+
+model MilkRecall {
+ id String @id @default(cuid())
+ title String
+ milkPoolId String
+ initiatedAt DateTime
+ reason String
+ coordinator String
+ responseEvidence String
+ status String @default("Draft")
+ milkBankProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([milkBankProgramId])
+ linkedMilkPoolId MilkPool @relation("MilkRecall_milkPoolId", fields: [milkPoolId], references: [id], onDelete: Restrict)
+ linkedMilkBankProgramId MilkBankProgram @relation("MilkRecall_milkBankProgramId", fields: [milkBankProgramId], references: [id], onDelete: Restrict)
+}
+
+model OperationalTask {
+ id String @id @default(cuid())
+ title String
+ owner String
+ priority String
+ startAt DateTime
+ dueAt DateTime
+ done Boolean
+ notes String?
+ status String @default("Draft")
+ milkBankProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([milkBankProgramId])
+ linkedMilkBankProgramId MilkBankProgram @relation("OperationalTask_milkBankProgramId", fields: [milkBankProgramId], references: [id], onDelete: Restrict)
+}
+
+model RuleVersion {
+ id String @id @default(cuid())
+ title String
+ jurisdiction String
+ version String
+ effectiveAt DateTime
+ expiresAt DateTime?
+ sourceUrl String
+ requirementText String
+ status String @default("Draft")
+ milkBankProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([milkBankProgramId])
+ linkedMilkBankProgramId MilkBankProgram @relation("RuleVersion_milkBankProgramId", fields: [milkBankProgramId], references: [id], onDelete: Restrict)
+}
+
+model DocumentRequirement {
+ id String @id @default(cuid())
+ title String
+ category String
+ requiredBy DateTime
+ sourceReference String
+ evidenceReference String?
+ reviewNotes String?
+ status String @default("Draft")
+ milkBankProgramId String
+ createdAt DateTime @default(now())
+ updatedAt DateTime @updatedAt
+ @@index([createdAt])
+ @@index([milkBankProgramId])
+ linkedMilkBankProgramId MilkBankProgram @relation("DocumentRequirement_milkBankProgramId", fields: [milkBankProgramId], references: [id], onDelete: Restrict)
+}
