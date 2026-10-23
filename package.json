@@ -13,7 +13,7 @@
     "db:migrate": "prisma migrate dev",
     "db:deploy": "prisma migrate deploy",
     "db:seed": "tsx --env-file=.env prisma/seed.ts",
-    "test": "tsx --test tests/*.test.ts",
+    "test": "tsx --test tests/*.test.ts && node --test tests/*.test.mjs",
     "setup": "node scripts/setup.mjs",
     "test:integration": "node scripts/integration-test.cjs"
   },
